@@ -36,6 +36,7 @@ public class JWTUtil {
     }
 
     public Boolean isExpired(String token) {
+        System.out.println("session: " + Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration());
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 

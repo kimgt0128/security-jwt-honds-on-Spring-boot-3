@@ -30,3 +30,10 @@ server:
 jwt:
   secret: UCR7kZ1N5l037fkmyvblGK4SrGzmfdAW
   expiration: 3600000
+
+logging:
+  level:
+    root: info
+    org.hibernate.sql: debug
+    org.hibernate.type.descriptor.sql: debug
+    org.springframework.security: trace
