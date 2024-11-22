@@ -72,11 +72,8 @@ public class SecurityConfig {
                 //JWT를 통한 인증/인가를 위해 세션을 STATELESS로 설정
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy((SessionCreationPolicy.STATELESS))
-                );
-        http
-
-                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
-        http
+                )
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class)
                 /*
                 로그인 필터 추가
                 필터가 중복 호출될 수 있으므로 Bean을 이용한 종속성 주입 대신 객체 생성 후 의존성 주입
