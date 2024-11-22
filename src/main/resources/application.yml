@@ -21,9 +21,12 @@ spring:
     username: root
     password: "0000"
 
-
 server:
   servlet:
     encoding:
       charset: UTF-8
       force-response: 'true'
+
+jwt:
+  secret: UCR7kZ1N5l037fkmyvblGK4SrGzmfdAW
+  expiration: 3600000
