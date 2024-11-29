@@ -1,6 +1,7 @@
 package com.security.JWT_Hands_On.jwt.service;
 
 
+import com.security.JWT_Hands_On.jwt.dto.ReissueTokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,7 @@ public class JwtReissueService {
 
     private final JwtUtil jwtUtil;
 
-    public String reissueToken(String refreshToken) {
+    public ReissueTokenResponse reissueToken(String refreshToken) {
 
 
         System.out.println("session: " + jwtUtil.getUsername(refreshToken));
@@ -34,8 +35,11 @@ public class JwtReissueService {
         String role = jwtUtil.getRole(refreshToken);
 
         //새로운 jwt token 만들기
+        //refresh rotate를 사용하도록 반환
         System.out.println("reissued token created");
-        return jwtUtil.createJwt("access", username, role, 600000L);
+        String newAccessToken = jwtUtil.createJwt("access", username, role, 600000L);
+        String newRefreshToken = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
+        return new ReissueTokenResponse(newAccessToken, newRefreshToken);
     }
 }
