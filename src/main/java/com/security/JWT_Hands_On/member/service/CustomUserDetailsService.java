@@ -1,8 +1,8 @@
-package com.security.JWT_Hands_On.service;
+package com.security.JWT_Hands_On.member.service;
 
-import com.security.JWT_Hands_On.dto.CustomUserDetails;
-import com.security.JWT_Hands_On.entity.MemberJwt;
-import com.security.JWT_Hands_On.repository.MemberRepository;
+import com.security.JWT_Hands_On.member.dto.CustomUserDetails;
+import com.security.JWT_Hands_On.member.entity.MemberJwt;
+import com.security.JWT_Hands_On.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

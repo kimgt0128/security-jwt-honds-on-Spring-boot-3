@@ -1,7 +1,6 @@
-package com.security.JWT_Hands_On.controller;
+package com.security.JWT_Hands_On.member.controller;
 
 
-import lombok.Getter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;

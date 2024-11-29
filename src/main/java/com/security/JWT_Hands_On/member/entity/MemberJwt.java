@@ -1,4 +1,4 @@
-package com.security.JWT_Hands_On.entity;
+package com.security.JWT_Hands_On.member.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

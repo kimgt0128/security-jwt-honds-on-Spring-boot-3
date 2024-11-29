@@ -1,29 +1,27 @@
-package com.security.JWT_Hands_On.jwt;
+package com.security.JWT_Hands_On.jwt.filter;
 
 
-import com.security.JWT_Hands_On.dto.CustomUserDetails;
-import com.security.JWT_Hands_On.entity.MemberJwt;
+import com.security.JWT_Hands_On.member.dto.CustomUserDetails;
+import com.security.JWT_Hands_On.member.entity.MemberJwt;
+import com.security.JWT_Hands_On.jwt.service.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Member;
 
 @RequiredArgsConstructor
 
 public class JWTFilter extends OncePerRequestFilter {
-    private final JWTUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     /**********************
     * Filter에 대한 내부 구현

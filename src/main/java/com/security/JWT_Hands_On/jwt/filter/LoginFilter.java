@@ -1,6 +1,7 @@
-package com.security.JWT_Hands_On.jwt;
+package com.security.JWT_Hands_On.jwt.filter;
 
-import com.security.JWT_Hands_On.dto.CustomUserDetails;
+import com.security.JWT_Hands_On.member.dto.CustomUserDetails;
+import com.security.JWT_Hands_On.jwt.service.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -24,7 +25,7 @@ import java.util.Iterator;
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
-    private final JWTUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {

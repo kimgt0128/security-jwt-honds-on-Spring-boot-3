@@ -1,8 +1,8 @@
 package com.security.JWT_Hands_On.config;
 
-import com.security.JWT_Hands_On.jwt.JWTFilter;
-import com.security.JWT_Hands_On.jwt.JWTUtil;
-import com.security.JWT_Hands_On.jwt.LoginFilter;
+import com.security.JWT_Hands_On.jwt.filter.JWTFilter;
+import com.security.JWT_Hands_On.jwt.service.JwtUtil;
+import com.security.JWT_Hands_On.jwt.filter.LoginFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +28,7 @@ import java.util.Collections;
 public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final JWTUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration  configuration) throws Exception {
@@ -65,7 +65,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/" , "/join").permitAll()
+                        .requestMatchers("/login", "/" , "/join", "/reissue").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
