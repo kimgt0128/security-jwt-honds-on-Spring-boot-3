@@ -1,6 +1,7 @@
 package com.security.JWT_Hands_On.config;
 
 import com.security.JWT_Hands_On.jwt.filter.JWTFilter;
+import com.security.JWT_Hands_On.jwt.repository.RefreshRepository;
 import com.security.JWT_Hands_On.jwt.service.JwtUtil;
 import com.security.JWT_Hands_On.jwt.filter.LoginFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +30,7 @@ public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
+    private final RefreshRepository refreshRepository;;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration  configuration) throws Exception {
@@ -78,7 +80,7 @@ public class SecurityConfig {
                 로그인 필터 추가
                 필터가 중복 호출될 수 있으므로 Bean을 이용한 종속성 주입 대신 객체 생성 후 의존성 주입
                  */
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
