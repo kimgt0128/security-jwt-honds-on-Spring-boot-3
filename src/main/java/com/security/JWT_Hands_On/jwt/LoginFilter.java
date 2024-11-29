@@ -3,9 +3,11 @@ package com.security.JWT_Hands_On.jwt;
 import com.security.JWT_Hands_On.dto.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,11 +42,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterchain, Authentication authentication) {
+
+
         //시큐리티에서 제공하는 CustomUserDetail 객체 생성
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
         //username 설정
         String username = customUserDetails.getUsername();
+
+
 
         //authentication으로부터 Role값 가져오기
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -55,12 +61,26 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         System.out.println("login success");
         System.out.println("username: " + username);
         System.out.println("role: " + role);
+        /**************************************************************************************
+         *단일 토큰 발급 코드
+         * 다중 토큰 발급 코드로 교체
 
-
-        String token = jwtUtil.createJwt(username, role, 66 * 60 * 1000L);
+         String token = jwtUtil.createJwt(username, role, 66 * 60 * 1000L);
 
         //RFC 7235 정의에 따른 HTTP 인증 방식 설정
         response.addHeader("Authorization", "Bearer " + token);
+
+         *****************************************************************************************/
+
+        //토큰 생성
+        String access = jwtUtil.createJwt("access", username, role, 600000L);
+        String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+
+        //응답 설정
+        response.setHeader("access", access);
+        response.addCookie(ccreateCookie("refresh", refresh));
+        response.setStatus(HttpStatus.OK.value());
+
     }
 
     @Override
@@ -68,5 +88,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         System.out.println("login fail");
         response.setStatus(401);
+    }
+
+    private Cookie ccreateCookie(String key, String value) {
+        Cookie cookie = new Cookie(key, value);
+        //cookie.setSecure(true); : Https 통신을 위한 코드
+        ///cookie.setPath("/");
+        return cookie;
     }
 }

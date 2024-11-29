@@ -3,11 +3,13 @@ package com.security.JWT_Hands_On.jwt;
 
 import com.security.JWT_Hands_On.dto.CustomUserDetails;
 import com.security.JWT_Hands_On.entity.MemberJwt;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Member;
 
 @RequiredArgsConstructor
@@ -31,39 +34,49 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        //request로부터 Authorization 헤더를 찾음
-        String authorizationHeader = request.getHeader("Authorization");
-        System.out.println("authorizationHeader: " + authorizationHeader);
+        String accessToken = request.getHeader("access");
 
-        //Authorization 헤더 검증
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            //현재 필터를 종료하고 request와 response를 다음 필터로 전달
+        //토큰이 없다면 다음 필터로 넘김
+        if (accessToken == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
+        //토큰 만료 여부 확인(만료시 다음 필터로 넘기지 않고 응답 생성)
+        try{
+            jwtUtil.isExpired(accessToken);
+        }
+        catch (ExpiredJwtException e){
 
-        //Barer 부분 제거 후 순수 토큰만 획득
-        String token = authorizationHeader.split(" ")[1];
-        System.out.println("token: " + token);
+            //response body
+            PrintWriter writer = response.getWriter();
+            writer.print("acccess token expired");
 
-        //남은 세션 시간 정보 출력
-
-        //토큰 소멸 시간 검증
-        System.out.println("isExpired: " + jwtUtil.isExpired(token));
-        if (jwtUtil.isExpired(token)) {
-            filterChain.doFilter(request, response);
+            //response status code
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
+
+        //토큰이 access인지 확인(발급시 페이로드 명시)
+        String cagegory = jwtUtil.getCategory(accessToken);
+        if (!cagegory.equals("access")) {
+            PrintWriter writer = response.getWriter();
+
+            //response status code
+            writer.print("invalid access token");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
+
+
 
         //토큰에서 username과 role 획득
-        String username = jwtUtil.getUsername(token);
-        String role = jwtUtil.getRole(token);
+        String username = jwtUtil.getUsername(accessToken);
+        String role = jwtUtil.getRole(accessToken);
 
         //엔티티를 생성하여 값 설정
         MemberJwt memberEntity = new MemberJwt();
         memberEntity.setMemberName(username);
-        memberEntity.setMemberPassword("temppassword"); //임시 비밀 번호 생성: 매번 요청시마다 DB에서 조회하므로 비효율
+        //memberEntity.setMemberPassword("temppassword"); //임시 비밀 번호 생성: 매번 요청시마다 DB에서 조회하므로 비효율
         memberEntity.setRole(role);
 
         //UserDetails에 회원 정보 객체 담기
