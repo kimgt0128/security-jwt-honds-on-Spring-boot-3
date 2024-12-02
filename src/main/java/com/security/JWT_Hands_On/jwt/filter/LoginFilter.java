@@ -1,5 +1,7 @@
 package com.security.JWT_Hands_On.jwt.filter;
 
+import com.security.JWT_Hands_On.jwt.entity.RefreshEntity;
+import com.security.JWT_Hands_On.jwt.repository.RefreshRepository;
 import com.security.JWT_Hands_On.member.dto.CustomUserDetails;
 import com.security.JWT_Hands_On.jwt.service.JwtUtil;
 import jakarta.servlet.FilterChain;
@@ -18,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
 @RequiredArgsConstructor
@@ -26,6 +29,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final RefreshRepository refreshRepository;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -77,6 +81,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String access = jwtUtil.createJwt("access", username, role, 600000L);
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
+        //토큰 저장
+        addRefreshEntity(username, refresh, 86400000L);
+
         //응답 설정
         response.setHeader("access", access);
         response.addCookie(ccreateCookie("refresh", refresh));
@@ -89,6 +96,18 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         System.out.println("login fail");
         response.setStatus(401);
+    }
+
+    private void addRefreshEntity(String username, String refresh, Long expireMs) {
+        //세션 만료 일자 생성
+        Date date = new Date(System.currentTimeMillis() + expireMs);
+
+        RefreshEntity refreshEntity = new RefreshEntity();
+        refreshEntity.setUsername(username);
+        refreshEntity.setRefresh(refresh);
+        refreshEntity.setExpiration(date.toString());
+
+        refreshRepository.save(refreshEntity);
     }
 
     private Cookie ccreateCookie(String key, String value) {
