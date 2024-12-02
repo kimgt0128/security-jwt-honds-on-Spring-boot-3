@@ -1,5 +1,6 @@
 package com.security.JWT_Hands_On.config;
 
+import com.security.JWT_Hands_On.jwt.filter.CustomLogoutFilter;
 import com.security.JWT_Hands_On.jwt.filter.JWTFilter;
 import com.security.JWT_Hands_On.jwt.repository.RefreshRepository;
 import com.security.JWT_Hands_On.jwt.service.JwtUtil;
@@ -17,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -80,7 +82,9 @@ public class SecurityConfig {
                 로그인 필터 추가
                 필터가 중복 호출될 수 있으므로 Bean을 이용한 종속성 주입 대신 객체 생성 후 의존성 주입
                  */
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class)
+                //로그아웃 필터 등록
+                .addFilterAt(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
 
         return http.build();
     }

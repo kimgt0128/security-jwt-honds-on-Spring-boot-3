@@ -31,6 +31,7 @@ public class JwtReissueService {
         }
 
         String category = jwtUtil.getCategory(refreshToken);
+        System.out.println("category: " + category);
         if(!category.equals("refresh")) {
             throw new IllegalArgumentException("Token category is not refresh");
         }
