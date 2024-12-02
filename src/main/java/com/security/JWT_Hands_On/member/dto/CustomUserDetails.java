@@ -1,6 +1,6 @@
-package com.security.JWT_Hands_On.dto;
+package com.security.JWT_Hands_On.member.dto;
 
-import com.security.JWT_Hands_On.entity.MemberJwt;
+import com.security.JWT_Hands_On.member.entity.MemberJwt;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

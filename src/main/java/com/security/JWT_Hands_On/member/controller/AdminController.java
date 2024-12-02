@@ -1,4 +1,4 @@
-package com.security.JWT_Hands_On.controller;
+package com.security.JWT_Hands_On.member.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

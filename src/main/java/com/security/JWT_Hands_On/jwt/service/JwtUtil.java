@@ -1,4 +1,4 @@
-package com.security.JWT_Hands_On.jwt;
+package com.security.JWT_Hands_On.jwt.service;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,11 +19,11 @@ import java.util.Date;
  */
 
 @Component
-public class JWTUtil {
+public class JwtUtil {
 
     private SecretKey secretKey;
 
-    public JWTUtil(@Value("${jwt.secret}")String secret) {
+    public JwtUtil(@Value("${jwt.secret}")String secret) {
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
     //token과 secretKey를 비교하여 유저 정보를 가져오는 메서드
