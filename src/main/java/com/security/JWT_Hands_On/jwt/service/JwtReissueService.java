@@ -56,7 +56,7 @@ public class JwtReissueService {
         refreshRepository.deleteByRefresh(refreshToken);
         addRefreshEntity(username, newRefreshToken, 86400000L);
 
-        return new ReissueTokenResponse(newAccessToken, newRefreshToken);
+        return new ReissueTokenResponse(newRefreshToken, newAccessToken);
     }
 
     private void addRefreshEntity(String username, String refresh, Long expireMs) {
